@@ -139,6 +139,45 @@ class ReorderableItemViewState extends State<ReorderableItemView>
     }
   }
 
+  void changePlaces(int selfIndex, int dropIndex) {
+    // Actually I can use only use the targetDropIndex to decide the target pos, but what to do I change middle
+    if (!mounted) return;
+    // we don't need update if already dispose()
+    if (!_listState.containsByIndex(index)) {
+      return;
+    }
+
+    if (_dragging) {
+      return;
+    }
+
+    if (index == dropIndex) {
+      Offset newOffset = _listState.getPosByIndex(selfIndex) - _listState.getPosByIndex(index);
+      _targetOffset = newOffset;
+    } else if (_targetOffset == _listState.getPosByIndex(selfIndex) - _listState.getPosByIndex(index)) {
+      Offset newOffset = Offset.zero;
+      _targetOffset = newOffset;
+    }
+
+    if (_offsetAnimation == null) {
+      _offsetAnimation = AnimationController(vsync: _listState)
+        ..duration = const Duration(milliseconds: 250)
+        ..addListener(rebuild)
+        ..addStatusListener((status) {
+          if (status == AnimationStatus.completed) {
+            _startOffset = _targetOffset;
+            _offsetAnimation?.dispose();
+            _offsetAnimation = null;
+          }
+        })
+        ..forward(from: 0.0);
+    } else {
+      // 调转方向
+      _startOffset = offset;
+      _offsetAnimation?.forward(from: 0.0);
+    }
+  }
+
   void _checkPlaceHolder() {
     if (!_dragging) {
       return;

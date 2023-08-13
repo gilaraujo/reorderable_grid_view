@@ -99,6 +99,9 @@ class ReorderableWrapperWidget extends StatefulWidget
   final bool? dragEnabled;
 
   @override
+  final bool? changePlaces;
+
+  @override
   final Duration? dragStartDelay;
 
   @override
@@ -119,6 +122,7 @@ class ReorderableWrapperWidget extends StatefulWidget
     this.onDragStart,
     this.onDragUpdate,
     this.dragEnabled,
+    this.changePlaces,
     this.dragStartDelay,
     this.isSliver,
   }) : super(key: key);

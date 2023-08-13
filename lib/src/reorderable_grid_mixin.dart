@@ -31,6 +31,7 @@ mixin ReorderableGridWidgetMixin on StatefulWidget {
   Widget get child;
   Duration? get dragStartDelay;
   bool? get dragEnabled;
+  bool? get changePlaces;
 
   bool? get isSliver;
 
@@ -47,6 +48,7 @@ mixin ReorderableGridStateMixin<T extends ReorderableGridWidgetMixin>
 
   Duration get dragStartDelay => widget.dragStartDelay ?? kLongPressTimeout;
   bool get dragEnabled => widget.dragEnabled ?? true;
+  bool get changePlaces => widget.changePlaces ?? false;
   // it's not as drag start?
   void startDragRecognizer(int index, PointerDownEvent event,
       MultiDragGestureRecognizer recognizer) {
@@ -346,7 +348,11 @@ mixin ReorderableGridStateMixin<T extends ReorderableGridWidgetMixin>
     if (newTargetIndex != _dropIndex) {
       _dropIndex = newTargetIndex;
       for (var item in __items.values) {
-        item.updateForGap(_dropIndex!);
+        if (changePlaces) {
+          item.changePlaces(_dragIndex!, _dropIndex!);
+        } else {
+          item.updateForGap(dropIndex!);
+        }
       }
     }
   }
