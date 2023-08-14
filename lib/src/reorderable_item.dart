@@ -282,6 +282,9 @@ class ReorderableItemViewState extends State<ReorderableItemView>
   // how do you think of this?
   @override
   Widget build(BuildContext context) {
+    if (_dragging) {
+      return const SizedBox();
+    }
     return RepaintBoundary(
       child: Listener(
         onPointerDown: (PointerDownEvent e) {
